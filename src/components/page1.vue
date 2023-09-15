@@ -131,7 +131,7 @@ import { ref } from 'vue'
             <div class="col">
               <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1" >เบอร์โทรศัพท์</span>
-                <input id="num" class="form-control" type="text" pattern="[0-9]{10}" maxlength="10" placeholder="กรอกเบอร์โทรศัพท์(10หลัก)" required><br>
+                <input id="num" class="form-control" type="text" pattern="[0-9]{10}" maxlength="10" aria-describedby="basic-addon1" placeholder="กรอกเบอร์โทรศัพท์(10หลัก)" required><br>
               </div>
             </div>
             <div class="col">
@@ -150,7 +150,7 @@ import { ref } from 'vue'
             </div>
           </div>
           <button  type="submit" class="btn btn-warning"  style="color: rgb(255, 255, 255); font-size: 20px;">ยืนยันการจองโต๊ะ</button>
-          <p v-if="bookingData.length <= 0" style="color: red;">Please select a table.</p>
+          <p v-if="bookingData.length <= 0" style="color: red;">กรุณาเลือกโต๊ะ</p>
         </form>
       </div>
     </div>
@@ -215,7 +215,7 @@ export default {
 
   handleSubmit() {
     if (this.bookingData.length <= 0) {
-      alert('กรุณาเลือกโต๊ะ.');
+      alert('กรุณาเลือกโต๊ะ');
       return; 
     }
       setTimeout(() => {
