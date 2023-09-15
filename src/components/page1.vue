@@ -215,7 +215,7 @@ export default {
 
   handleSubmit() {
     if (this.bookingData.length <= 0) {
-      alert('Please select a table.');
+      alert('กรุณาเลือกโต๊ะ.');
       return; 
     }
       setTimeout(() => {
