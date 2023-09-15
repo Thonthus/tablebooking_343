@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-
 </script>
 
 
@@ -12,7 +11,7 @@ import { ref } from 'vue'
     <div class="row row-cols-2 ">
       <div class="col mb-4">
         <div class="card" style="width: 100%;">
-          <img src="src/assets/goboriT.png" class="card-img-top" alt="goboriT">
+          <img src="/src/assets/goboriT.png" class="card-img-top" alt="goboriT">
           <div class="card-body">
             <h5 class="card-title">โกโบริ</h5>
             <p class="card-text">ร้านหมูกระทะที่มีเมนูให้ได้เลือกหลากหลาย รวมไปถึงของสดแต่ละอย่าง สะอาด สดใหม่ทุกวัน มีเมนูหมูหมักให้เลือกเพียบ! รวมถึงเมนูพร้อมทานอื่นๆ และของหวาน</p>
@@ -31,7 +30,7 @@ import { ref } from 'vue'
       </div>
       <div class="col">
         <div class="card" style="width: 100%;">
-          <img src="src/assets/grillterminalT.png" class="card-img-top" alt="grillterminalT">
+          <img src="/src/assets/grillterminalT.png" class="card-img-top" alt="grillterminalT">
           <div class="card-body">
             <h5 class="card-title">Grill Terminal</h5>
             <p class="card-text">ร้านหมูกระทะสุดคุ้ม ที่ไม่ได้มีแค่หมูกระทะ แต่ยังมีคาราวานซีฟู้ด ไว้คอยให้บริการอีกด้วย ราคาค่อนข้างย่อมเยา</p>
@@ -50,7 +49,7 @@ import { ref } from 'vue'
       </div>
       <div class="col">
         <div class="card" style="width: 100%; height: 100%;">
-          <img src="src/assets/lukjumT.png" class="card-img-top" alt="lukjumT">
+          <img src="/src/assets/lukjumT.png" class="card-img-top" alt="lukjumT">
           <div class="card-body">
             <h5 class="card-title">ลักจุ่ม มุมตึก</h5>
             <p class="card-text">บุฟเฟ่ต์หมูกระทะ อิ่มไม่อั้นในราคาดี ๆ รวมเครื่องดื่ม มีทั้งหมู ไก่ เนื้อ ซีฟู้ด และผักสด รวมถึงเมนูเนื้อหมักสูตรเด็ดของทางร้าน</p>
@@ -69,7 +68,7 @@ import { ref } from 'vue'
       </div>
       <div class="col">
         <div class="card" style="width: 100%;">
-          <img src="src/assets/miangdongT.png" class="card-img-top" alt="miangdongT">
+          <img src="/src/assets/miangdongT.png" class="card-img-top" alt="miangdongT">
           <div class="card-body">
             <h5 class="card-title">เมียงดง Korean BBQ</h5>
             <p class="card-text">ร้านบุฟเฟ่ต์หมูกระทะในเชียงใหม่ แต่มาในสไตล์เกาหลี สายเกาต้องไปโดน ทั้งสไตล์อาหาร เครื่องเคียง รวมถึงเพลงที่เปิดเป็นสไตล์เกาหลี ส่วนเมนูอาหารก็มีให้เลือกเยอะแยะมากมาย</p>
@@ -151,6 +150,7 @@ import { ref } from 'vue'
             </div>
           </div>
           <button  type="submit" class="btn btn-warning"  style="color: rgb(255, 255, 255); font-size: 20px;">ยืนยันการจองโต๊ะ</button>
+          <p v-if="bookingData.length <= 0" style="color: red;">Please select a table.</p>
         </form>
       </div>
     </div>
@@ -214,6 +214,10 @@ export default {
 
 
   handleSubmit() {
+    if (this.bookingData.length <= 0) {
+      alert('Please select a table.');
+      return; 
+    }
       setTimeout(() => {
         document.getElementById('gobori').value = '';
         document.getElementById('grillterminal').value = '';

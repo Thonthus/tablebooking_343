@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 import page1 from './components/page1.vue'
-
 </script>
 
 <template>
