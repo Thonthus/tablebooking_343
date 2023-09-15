@@ -125,36 +125,68 @@ import { ref } from 'vue'
           <h4>รายละเอียดผู้จอง</h4>
           <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1" >ชื่อผู้จอง</span>
-            <input id="name" type="text" class="form-control" placeholder="ชื่อผู้จอง" aria-label="Username" aria-describedby="basic-addon1" required>
+            <input id="name" v-model="formData.name" type="text" class="form-control" placeholder="ชื่อผู้จอง" aria-label="Username" aria-describedby="basic-addon1" required>
           </div>
           <div class="row">
             <div class="col">
               <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1" >เบอร์โทรศัพท์</span>
-                <input id="num" class="form-control" type="text" pattern="[0-9]{10}" maxlength="10"  placeholder="กรอกเบอร์โทรศัพท์(10หลัก)" aria-label="tel" aria-describedby="basic-addon1" required>
+                <input id="num" v-model="formData.num" class="form-control" type="text" pattern="[0-9]{10}" maxlength="10"  placeholder="กรอกเบอร์โทรศัพท์(10หลัก)" aria-label="tel" aria-describedby="basic-addon1" required>
               </div>
             </div>
             <div class="col">
               <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1" >วันที่</span>
-                <input id="date" type="date" class="form-control"  v-model="selectedDate" :min="currentDate" aria-label="Date" aria-describedby="basic-addon1" required>
+                <span class="input-group-text" id="basic-addon1" >วันที่และเวลา</span>
+                <input id="datetime" v-model="formData.datetime" :min="minDate" type="datetime-local" class="form-control"  aria-label="Datetime" aria-describedby="basic-addon1" required>
               </div>
             </div>
           </div>
-          <div class="row row-cols-2">
-            <div class="col">
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1" >เวลา</span>
-                <input id="time" type="time" class="form-control" placeholder="Time" aria-label="Time" required>
-              </div>
-            </div>
-          </div>
-          <button  type="submit" class="btn btn-warning"  style="color: rgb(255, 255, 255); font-size: 20px;">ยืนยันการจองโต๊ะ</button>
+          
+          <button  v-if="bookingResult.length <=0" type="submit" class="btn btn-warning"  style="color: rgb(255, 255, 255); font-size: 20px;">ยืนยันการจองโต๊ะ</button>
+        </form>
+        <form action="">
           <p v-if="bookingData.length <= 0" style="color: red;">กรุณาเลือกโต๊ะ</p>
+          <div v-if="bookingResult.length > 0" class="bookingInfocon" >
+            <br>
+            <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="color: rgb(255, 255, 255); font-size: 20px; margin-right: 2%;">
+                รายละเอียดการจอง
+            </button>
+            <button type="submit" @click="resetField" class="btn btn-danger" style="color: rgb(255, 255, 255); font-size: 20px; margin-left: 2%;">ล้างข้อมูล</button>
+          </div>
         </form>
       </div>
     </div>
 
+
+  <div class="mdcon" v-if="bookingResult.length > 0">  
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-3" id="staticBackdropLabel" style="background-color: rgb(255, 202, 44); width: 100%; padding: 15px; border-radius: 20px;">รายละเอียดการจอง</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <h5>ชื่อผู้จอง : {{ formData.name }}</h5>
+            <h5>เบอร์โทรศัพท์ : {{ formData.num }}</h5>
+            <h5>วันที่ : {{ date }}</h5>
+            <h5>เวลา : {{ time }}</h5><br>
+            <h5>ร้าน/จำนวนโต๊ะที่จอง : </h5>
+            <ul style="list-style: none; font-size: 18px; margin-left: -5%;">
+              <li v-for="(item, index) in bookingResult" :key="index">
+                {{ Object.keys(item)[0] }}: {{ Object.values(item)[0] }} โต๊ะ
+              </li>
+            </ul>
+            <br>
+            <p style="color: rgb(150, 0, 0);">*หากต้องการเพิ่ม/ลดจำนวนโต๊ะ กรุณาล้างข้อมูลและจองใหม่อีกครั้ง</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 
@@ -169,20 +201,41 @@ export default {
       lukjumTable: 0,
       miangdongTable: 0,
       bookingData: [],
-      currentDate: new Date().toISOString().split('T')[0]
+      bookingResult: [],
+      formData: {
+        name: '',
+        num: '',
+        datetime: '',},
     };
   },
 
-
+  computed: {
+    minDate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    },
+    date() {
+      if (this.formData.datetime) {
+        const dateTimeParts = this.formData.datetime.split('T');
+        return dateTimeParts[0];
+      }
+      return '';
+    },
+    time() {
+      if (this.formData.datetime) {
+        const dateTimeParts = this.formData.datetime.split('T');
+        return dateTimeParts[1];
+      }
+      return '';
+    },
+  },
   methods: {
-    setMinTime() {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0'); 
-    const minutes = now.getMinutes().toString().padStart(2, '0'); 
-    const currentTime = `${hours}:${minutes}`;
-    
-    document.getElementById('time').min = currentTime;
- },
 
     handleBooking() {
     const goboriTableValue = document.getElementById('gobori').value;
@@ -218,23 +271,42 @@ export default {
       alert('กรุณาเลือกโต๊ะ');
       return; 
     }
+  
+    this.bookingResult = [];
+
+    if (this.goboriTable > 0) {
+      this.bookingResult.push({ 'โกโบริ ': this.goboriTable });
+    }
+    if (this.grillterminalTable > 0) {
+      this.bookingResult.push({ 'Grill Terminal ': this.grillterminalTable });
+    }
+    if (this.lukjumTable > 0) {
+      this.bookingResult.push({ 'ลักจุ่ม มุมตึก ': this.lukjumTable });
+    }
+    if (this.miangdongTable > 0) {
+      this.bookingResult.push({ 'เมียงดง Korean BBQ ': this.miangdongTable });
+    }
+
+
       setTimeout(() => {
-        document.getElementById('gobori').value = '';
-        document.getElementById('grillterminal').value = '';
-        document.getElementById('lukjum').value = '';
-        document.getElementById('miangdong').value = '';
-        document.getElementById('name').value = '';
-        document.getElementById('num').value = '';
-        document.getElementById('date').value = '';
-        document.getElementById('time').value = '';
-        this.bookingData = [];
+      
         alert('จองโต๊ะสำเร็จ!');
-      }, 1000); 
+      }, 200); 
     }
   },
-  mounted() {
-  this.setMinTime(); 
-  }
+
+  resetField() {
+      document.getElementById('gobori').value = '';
+      document.getElementById('grillterminal').value = '';
+      document.getElementById('lukjum').value = '';
+      document.getElementById('miangdong').value = '';
+      document.getElementById('name').value = '';
+      document.getElementById('num').value = '';
+      document.getElementById('datetime').value = '';
+      this.bookingData = [];
+      this.bookingResult = [];
+  },
+
 }
 </script>
 
