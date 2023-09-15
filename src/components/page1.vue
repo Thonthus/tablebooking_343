@@ -131,7 +131,7 @@ import { ref } from 'vue'
             <div class="col">
               <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1" >เบอร์โทรศัพท์</span>
-                <input id="num" class="form-control" type="text" pattern="[0-9]{10}" maxlength="10" aria-describedby="basic-addon1" placeholder="กรอกเบอร์โทรศัพท์(10หลัก)" required><br>
+                <input id="num" class="form-control" type="text" pattern="[0-9]{10}" maxlength="10"  placeholder="กรอกเบอร์โทรศัพท์(10หลัก)" aria-label="tel" aria-describedby="basic-addon1" required>
               </div>
             </div>
             <div class="col">
